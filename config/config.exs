@@ -11,6 +11,12 @@ use Mix.Config
 # You can configure for your application as:
 #
 #     config :tweet_city, key: :value
+
+# Relace `nil` with your key or set the appropriate environment variable.
+config :tweet_city, consumer_secret: nil || System.get_env("consumer_secret")
+config :tweet_city, oauth_token_secret: nil || System.get_env("oauth_token_secret")
+config :tweet_city, consumer_key: nil || System.get_env("consumer_key")
+config :tweet_city, oauth_token: nil || System.get_env("oauth_token")
 #
 # And access this configuration in your application as:
 #
