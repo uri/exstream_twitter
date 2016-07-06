@@ -1,14 +1,27 @@
 defmodule TweetCity.Stream do
+  alias TweetCity.Web
   require Logger, as: L
   use GenServer
-  @base_url "https://stream.twitter.com/1.1/statuses/sample.json"
+  @method "POST"
+  @base_url "https://stream.twitter.com/1.1/statuses/filter.json"
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, :ok, opts)
   end
 
   def init(:ok) do
-    authorization = TweetCity.Oauth.authorization(method: "GET", url: @base_url, params: [])
+    params = [
+    ]
+    |> Web.percent_map
+
+    body = [
+      stall_warnings: "true",
+      language: "en",
+      track: "brexit",
+    ]
+    |> Web.percent_map
+
+    authorization = TweetCity.Oauth.authorization(method: @method, url: @base_url, params: body ++ params)
 
     headers = [
       { "Accept", "application/json" },
@@ -16,13 +29,39 @@ defmodule TweetCity.Stream do
       { "Content-Type", "application/x-www-form-urlencoded" },
     ]
 
-    # proxy = {"localhost", 8888}
-    worker = HTTPoison.get!(@base_url, headers, [stream_to: self, timeout: :infinity, hackney: [:insecure]])
+    L.debug "This is the authorization header"
+    L.debug inspect( authorization )
+
+    options = [
+      params: params,
+      proxy: {"localhost", 8888},
+      stream_to: self,
+      timeout: :infinity,
+      hackney: [:insecure]
+    ]
+
+    worker = HTTPoison.post!(@base_url, {:form, body}, headers, options )
+
     {:ok, worker}
   end
 
   def handle_info(msg, state) do
-    IO.inspect {:handle_info, msg}
-    {:noreply, state}
+    case msg do
+      %HTTPoison.Error{} -> raise("Something went wrong")
+
+
+      response = %HTTPoison.AsyncChunk{chunk: chunk} ->
+        IO.inspect( response )
+        IO.puts "*" |> String.duplicate 80
+        {:noreply, msg}
+
+
+      _ -> {:noreply, ""}
+    end
+  end
+
+  defp process_response_chunk( chunk ) do
+    IO.puts chunk
+    IO.puts String.duplicate "+", 80
   end
 end

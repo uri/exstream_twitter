@@ -97,8 +97,8 @@ defmodule TweetCity.Oauth do
   def signing_key do
     (consumer_secret |> URI.encode_www_form) <> "&" <> (oauth_token_secret |> URI.encode_www_form)
   end
-  defp consumer_secret, do: System.get_env("consumer_secret")
-  defp oauth_token_secret, do: System.get_env("oauth_token_secret")
-  defp consumer_key, do: System.get_env("consumer_key")
-  defp oauth_token, do: System.get_env("oauth_token")
+  defp consumer_secret, do: Application.get_env(:tweet_city, :consumer_secret)
+  defp oauth_token_secret, do: Application.get_env(:tweet_city, :oauth_token_secret)
+  defp consumer_key, do: Application.get_env(:tweet_city, :consumer_key)
+  defp oauth_token, do: Application.get_env(:tweet_city, :oauth_token)
 end
