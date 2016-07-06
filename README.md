@@ -1,4 +1,6 @@
 # TweetCity
+### Property of
+![logo-colour](https://cloud.githubusercontent.com/assets/566763/16632534/7a8fc45a-4392-11e6-9347-a5d77f135d63.png)
 
 ## Usage
 
@@ -17,3 +19,5 @@ Then in `iex`
 ```iex
 TweetCity.Stream.start_link
 ```
+
+&copy; Fullscript
