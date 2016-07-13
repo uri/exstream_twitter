@@ -1,7 +1,8 @@
 defmodule TweetCity.Stream do
-  alias TweetCity.Web
-  require Logger, as: L
   use GenServer
+  require Logger, as: L
+  alias TweetCity.Web
+
   @method "POST"
   @base_url "https://stream.twitter.com/1.1/statuses/filter.json"
 
@@ -40,6 +41,11 @@ defmodule TweetCity.Stream do
       hackney: [:insecure]
     ]
 
+    # Throttle
+    throttle_amount = GenServer.call(TweetCity.Throttler, :query)
+    Logger.debug "Throttling for #{throttle_amount}"
+    Process.sleep throttle_amount * 1000
+
     worker = HTTPoison.post!(@base_url, {:form, body}, headers, options )
 
     {:ok, worker}
@@ -51,6 +57,7 @@ defmodule TweetCity.Stream do
 
 
       response = %HTTPoison.AsyncChunk{chunk: chunk} ->
+        GenServer.cast(TweetCity.Throttler, :ok)
         IO.inspect( response )
         IO.puts "*" |> String.duplicate 80
         {:noreply, msg}
@@ -58,6 +65,10 @@ defmodule TweetCity.Stream do
 
       _ -> {:noreply, ""}
     end
+  end
+
+  def terminate _reason, _state do
+    GenServer.cast(TweetCity.Throttler, :error)
   end
 
   defp process_response_chunk( chunk ) do
