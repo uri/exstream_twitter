@@ -8,7 +8,8 @@ defmodule TweetCity.StreamSupervisor do
   def init(_) do
     children = [
       worker(TweetCity.Throttler, []),
-      worker(TweetCity.Stream, [])
+      worker(TweetCity.Buffer, []),
+      worker(TweetCity.Stream, []),
     ]
 
     supervise(children, strategy: :one_for_one)

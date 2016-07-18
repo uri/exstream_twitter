@@ -58,11 +58,8 @@ defmodule TweetCity.Stream do
 
       response = %HTTPoison.AsyncChunk{chunk: chunk} ->
         GenServer.cast(TweetCity.Throttler, :ok)
-        IO.inspect( response )
-        IO.puts "*" |> String.duplicate 80
+        TweetCity.Buffer.add(chunk)
         {:noreply, msg}
-
-
       _ -> {:noreply, ""}
     end
   end
