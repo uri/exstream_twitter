@@ -28,6 +28,7 @@ defmodule TweetCity.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
+      {:poison, "~> 2.0.0"},
       {:httpoison, "~> 0.8.3"},
       {:ex_doc, "~> 0.12", only: :dev}
     ]

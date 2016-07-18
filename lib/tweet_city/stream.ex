@@ -18,7 +18,7 @@ defmodule TweetCity.Stream do
     body = [
       stall_warnings: "true",
       language: "en",
-      track: "brexit",
+      track: "pokemon",
     ]
     |> Web.percent_map
 
