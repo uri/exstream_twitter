@@ -1,4 +1,6 @@
 defmodule TweetCity.Oauth do
+  @oauth Application.get_env(:tweet_city, :oauth)
+
   def authorization( request = [method: method, url: url, params: params] ) do
     header = create_header
     signature = create_signature( [ {:oauth, header} | request ] )
@@ -44,11 +46,11 @@ defmodule TweetCity.Oauth do
 
   def create_header do
     [
-      oauth_consumer_key: consumer_key,
+      oauth_consumer_key: @oauth.consumer_key,
       oauth_nonce: generate_nonce,
       oauth_signature_method: "HMAC-SHA1",
       oauth_timestamp: :os.system_time(:seconds),
-      oauth_token: oauth_token,
+      oauth_token: @oauth.oauth_token,
       oauth_version: "1.0"
     ]
   end
@@ -95,10 +97,6 @@ defmodule TweetCity.Oauth do
   The consumer secret joined by an ampersand ('&') with the oauth secret, encoded in HMAC-SHA1 base64.
   """
   def signing_key do
-    (consumer_secret |> URI.encode_www_form) <> "&" <> (oauth_token_secret |> URI.encode_www_form)
+    (@oauth.consumer_secret |> URI.encode_www_form) <> "&" <> (@oauth.oauth_token_secret |> URI.encode_www_form)
   end
-  defp consumer_secret, do: Application.get_env(:tweet_city, :consumer_secret)
-  defp oauth_token_secret, do: Application.get_env(:tweet_city, :oauth_token_secret)
-  defp consumer_key, do: Application.get_env(:tweet_city, :consumer_key)
-  defp oauth_token, do: Application.get_env(:tweet_city, :oauth_token)
 end
