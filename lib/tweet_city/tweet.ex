@@ -1,29 +1,44 @@
 defmodule TweetCity.Tweet do
   defstruct source: "", friends_count: nil, followers_count: nil, text: ""
 
-  defdelegate parse!( chunk ), to: Poison.Parser
-
-  def decode( chunk ) do
-    Poison.decode!( chunk, as: %TweetCity.Tweet{} )
-  end
-
+  @doc """
+  Returns a stream of %TweetCity.Tweet{}
+  """
   def stream do
-    get_tweet = fn ->
-      try do
-        tweet =  TweetCity.Buffer.pop |> TweetCity.Parser.decode
-        tweet
-      rescue
-        anything -> nil
-      end
-    end
-
     Stream.unfold(nil, fn
-       n -> {get_tweet.(), nil}
+       n -> {get_tweet, nil}
     end)
     |> Stream.filter( fn e -> e != nil end )
   end
 
+  @doc """
+  Returns a stream of text corresponding to tweets.
+  """
   def simple_stream do
     stream |> Stream.map fn tweet -> tweet.text end
   end
+
+  @doc """
+  Returns a stream of tweets that do not begin with `@` or `RT`
+  """
+  def simple_stream original: true do
+    simple_stream
+    |> Stream.reject(fn
+       "RT" <> _rest -> true
+       "@" <> _rest -> true
+       _anything -> false
+    end)
+  end
+
+  defp get_tweet do
+    TweetCity.Buffer.pop |> decode
+  end
+
+  defp decode( chunk ) do
+    case Poison.decode( chunk, as: %TweetCity.Tweet{} ) do
+      {:ok, tweet} -> tweet
+      error -> nil
+    end
+  end
+
 end
