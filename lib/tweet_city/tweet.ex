@@ -34,10 +34,11 @@ defmodule TweetCity.Tweet do
     TweetCity.Buffer.pop |> decode
   end
 
+  defp decode( nil ), do: nil
   defp decode( chunk ) do
     case Poison.decode( chunk, as: %TweetCity.Tweet{} ) do
       {:ok, tweet} -> tweet
-      error -> nil
+      _error -> nil
     end
   end
 

@@ -6,20 +6,21 @@ defmodule TweetCity.Stream do
   @method "POST"
   @base_url "https://stream.twitter.com/1.1/statuses/filter.json"
 
-  def start_link(opts \\ []) do
-    GenServer.start_link(__MODULE__, :ok, opts)
+  def start_link(body) do
+    require IEx
+    IEx.pry
+    GenServer.start_link(__MODULE__, body, [])
   end
 
-  def init(:ok) do
+  def init(body) do
     params = [
     ]
     |> Web.percent_map
 
-    body = [
+    body = Keyword.merge([
       stall_warnings: "true",
       language: "en",
-      track: "pokemon",
-    ]
+    ], body)
     |> Web.percent_map
 
     authorization = TweetCity.Oauth.authorization(method: @method, url: @base_url, params: body ++ params)
@@ -38,7 +39,7 @@ defmodule TweetCity.Stream do
       proxy: {"localhost", 8888},
       stream_to: self,
       timeout: :infinity,
-      hackney: [:insecure]
+      hackney: [:insecure, recv_timeout: :infinity]
     ]
 
     # Throttle
