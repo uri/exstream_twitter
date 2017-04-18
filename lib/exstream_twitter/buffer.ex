@@ -1,4 +1,4 @@
-defmodule TweetCity.Buffer do
+defmodule ExstreamTwitter.Buffer do
   use GenServer
 
   def start_link do

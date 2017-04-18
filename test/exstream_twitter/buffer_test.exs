@@ -1,9 +1,9 @@
-defmodule TweetCity.BufferTest do
+defmodule ExstreamTwitter.BufferTest do
   use ExUnit.Case, async: true
-  import TweetCity.Buffer
+  import ExstreamTwitter.Buffer
 
   setup do
-    {:ok, _pid} = TweetCity.Buffer.start_link
+    {:ok, _pid} = ExstreamTwitter.Buffer.start_link
     {:ok, []}
   end
 
@@ -33,7 +33,7 @@ defmodule TweetCity.BufferTest do
 
     add "newest"
     assert get == "newest"
-    all = GenServer.call(TweetCity.Buffer, :get_all)
+    all = GenServer.call(ExstreamTwitter.Buffer, :get_all)
     assert length(all) == 100
   end
 end

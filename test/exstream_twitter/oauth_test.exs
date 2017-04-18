@@ -1,6 +1,6 @@
-defmodule TweetCity.OauthTest do
+defmodule ExstreamTwitter.OauthTest do
   use ExUnit.Case
-  alias TweetCity.Oauth
+  alias ExstreamTwitter.Oauth
   import Oauth
   doctest Oauth
 

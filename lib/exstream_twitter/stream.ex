@@ -1,7 +1,7 @@
-defmodule TweetCity.Stream do
+defmodule ExstreamTwitter.Stream do
   use GenServer
   require Logger, as: L
-  alias TweetCity.Web
+  alias ExstreamTwitter.Web
 
   @method "POST"
   @base_url "https://stream.twitter.com/1.1/statuses/filter.json"
@@ -21,7 +21,7 @@ defmodule TweetCity.Stream do
     ], body)
     |> Web.percent_map
 
-    authorization = TweetCity.Oauth.authorization(method: @method, url: @base_url, params: body ++ params)
+    authorization = ExstreamTwitter.Oauth.authorization(method: @method, url: @base_url, params: body ++ params)
 
     headers = [
       { "Accept", "application/json" },
@@ -41,7 +41,7 @@ defmodule TweetCity.Stream do
     ]
 
     # Throttle
-    throttle_amount = GenServer.call(TweetCity.Throttler, :query)
+    throttle_amount = GenServer.call(ExstreamTwitter.Throttler, :query)
     Logger.debug "Throttling for #{throttle_amount}"
     Process.sleep throttle_amount * 1000
 
@@ -56,15 +56,15 @@ defmodule TweetCity.Stream do
 
 
       response = %HTTPoison.AsyncChunk{chunk: chunk} ->
-        GenServer.cast(TweetCity.Throttler, :ok)
-        TweetCity.Buffer.add(chunk)
+        GenServer.cast(ExstreamTwitter.Throttler, :ok)
+        ExstreamTwitter.Buffer.add(chunk)
         {:noreply, msg}
       _ -> {:noreply, ""}
     end
   end
 
   def terminate _reason, _state do
-    GenServer.cast(TweetCity.Throttler, :error)
+    GenServer.cast(ExstreamTwitter.Throttler, :error)
   end
 
   defp process_response_chunk( chunk ) do

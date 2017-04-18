@@ -1,5 +1,5 @@
-defmodule TweetCity.Oauth do
-  @oauth Application.get_env(:tweet_city, :oauth)
+defmodule ExstreamTwitter.Oauth do
+  @oauth Application.get_env(:exstream_twitter, :oauth)
 
   def authorization( request = [method: method, url: url, params: params] ) do
     header = create_header

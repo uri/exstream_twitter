@@ -1,4 +1,4 @@
-defmodule TweetCity.Throttler do
+defmodule ExstreamTwitter.Throttler do
   use GenServer
   @name __MODULE__
 

@@ -1,4 +1,4 @@
-defmodule TweetCity.StreamSupervisor do
+defmodule ExstreamTwitter.StreamSupervisor do
   use Supervisor
 
   def start_link(filter_params) do
@@ -7,9 +7,9 @@ defmodule TweetCity.StreamSupervisor do
 
   def init(filter_params) do
     children = [
-      worker(TweetCity.Throttler, []),
-      worker(TweetCity.Buffer, []),
-      worker(TweetCity.Stream, [filter_params]),
+      worker(ExstreamTwitter.Throttler, []),
+      worker(ExstreamTwitter.Buffer, []),
+      worker(ExstreamTwitter.Stream, [filter_params]),
     ]
 
     supervise(children, strategy: :one_for_one)

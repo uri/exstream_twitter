@@ -1,8 +1,8 @@
-defmodule TweetCity.Mixfile do
+defmodule ExstreamTwitter.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :tweet_city,
+    [app: :exstream_twitter,
      version: "0.1.0",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,

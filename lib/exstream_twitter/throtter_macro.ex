@@ -1,4 +1,4 @@
-defmodule TweetCity.Throttler.Macro do
+defmodule ExstreamTwitter.Throttler.Macro do
   defmacro make_do_wait_time(type_throttle) do
     quote do
       {error_type, i} = unquote(type_throttle)

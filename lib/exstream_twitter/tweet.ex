@@ -1,8 +1,8 @@
-defmodule TweetCity.Tweet do
+defmodule ExstreamTwitter.Tweet do
   defstruct source: "", friends_count: nil, followers_count: nil, text: ""
 
   @doc """
-  Returns a stream of %TweetCity.Tweet{}
+  Returns a stream of %ExstreamTwitter.Tweet{}
   """
   def stream do
     Stream.unfold(nil, fn
@@ -31,12 +31,12 @@ defmodule TweetCity.Tweet do
   end
 
   defp get_tweet do
-    TweetCity.Buffer.pop |> decode
+    ExstreamTwitter.Buffer.pop |> decode
   end
 
   defp decode( nil ), do: nil
   defp decode( chunk ) do
-    case Poison.decode( chunk, as: %TweetCity.Tweet{} ) do
+    case Poison.decode( chunk, as: %ExstreamTwitter.Tweet{} ) do
       {:ok, tweet} -> tweet
       _error -> nil
     end

@@ -1,2 +1,0 @@
-defmodule TweetCity do
-end
