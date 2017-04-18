@@ -7,8 +7,6 @@ defmodule TweetCity.Stream do
   @base_url "https://stream.twitter.com/1.1/statuses/filter.json"
 
   def start_link(body) do
-    require IEx
-    IEx.pry
     GenServer.start_link(__MODULE__, body, [])
   end
 
@@ -36,7 +34,7 @@ defmodule TweetCity.Stream do
 
     options = [
       params: params,
-      proxy: {"localhost", 8888},
+      # proxy: {"localhost", 8888},
       stream_to: self,
       timeout: :infinity,
       hackney: [:insecure, recv_timeout: :infinity]
