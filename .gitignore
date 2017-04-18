@@ -19,3 +19,4 @@ erl_crash.dump
 Makefile
 .iex.exs
 config/dev.secret.exs
+.DS_Store
